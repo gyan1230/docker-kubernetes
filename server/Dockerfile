@@ -1,7 +1,7 @@
 # Dockerfile References: https://docs.docker.com/engine/reference/builder/
 
 # Start from the latest golang base image
-FROM golang:alpine3.11
+FROM golang:alpine3.11 as builder
 
 # Add Maintainer Info
 LABEL maintainer="Gyan chand Mohanty <gyan1230@gmail.com>"
@@ -20,13 +20,21 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-RUN go build -o main .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
 
-# This container exposes port 8080 to the outside world
+
+######## Start a new stage from scratch #######
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the Pre-built binary file from the previous stage
+COPY --from=builder /app/main .
+
+# Expose port 8080 to the outside world
 EXPOSE 8080
 
-# Declare volumes to mount
-#VOLUME [${}]
-
-# Run the binary program produced by `go install`
+# Command to run the executable
 CMD ["./main"]
