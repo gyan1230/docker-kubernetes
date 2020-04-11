@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+
+kind: ReplicaSet
+
+metadata:
+  name: httpd-rs
+  labels:
+    app: myapp
+    type: backend
+
+spec:
+  template:
+    metadata:
+      name: myapp
+      labels:
+        app: myapp
+        type: backend
+    spec:
+      containers:
+        - name: httpd-container
+          image: httpd
+  replicas: 3
+  selector:
+    matchLabels:
+      type: backend
+
