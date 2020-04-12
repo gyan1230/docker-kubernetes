@@ -1,0 +1,15 @@
+#define labels while creating pod. 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: simple-webapp
+  labels: 
+    app: App1
+    type: front-end
+
+spec:
+  containers:
+    - name: imple-webapp
+      image: imple-webapp
+      ports:
+        - containerPort: 8080
